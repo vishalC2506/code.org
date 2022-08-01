@@ -1,0 +1,60 @@
+var player1 = createSprite(380, 50, 10, 70);
+var computer = createSprite(5, 200, 10, 70);
+var ball = createSprite(200, 200, 10, 10);
+var playerscore = 0;
+var computerscore = 0;
+var gamestate = "serve";
+function draw() {
+  background("white");
+  if (gamestate === "serve") {
+    text("press space to start", 150, 180);
+  }
+  text(computerscore, 110, 20);
+  text(playerscore, 225, 20);
+  player1.y = camera.mouseY;
+  computer.y = ball.y-1;
+  createEdgeSprites();
+  ball.bounceOff(topEdge);
+  ball.bounceOff(player1);
+  ball.bounceOff(computer);
+  ball.bounceOff(bottomEdge);
+  for(var i=0;i<400;i=i+20){
+    line(200,i,200,i+10);
+  }
+  if (keyDown("space") && gamestate === "serve") {
+    serve();
+    gamestate = "play";
+  }
+  if (ball.x > 400 || ball.x < 0) {
+    if (ball.x > 400) {
+      computerscore = computerscore +1;
+    }
+    if (ball.x < 0) {
+      playerscore = playerscore+1;
+    }
+    reset();
+    gamestate = "serve";
+  }
+  if (playerscore === 5 || computerscore === 5) {
+    gamestate = "over";
+    text("game Over", 170, 160);
+    text("press R to restart", 160, 280);
+  }
+  if (keyDown("r") && gamestate === "over") {
+    gamestate = "serve";
+    computerscore = 0;
+    playerscore = 0;
+  }
+  drawSprites();
+}
+function serve() {
+  ball.velocityX = 3;
+  ball.velocityY = 4;
+}
+function reset() {
+  ball.x = 200;
+  ball.y = 200;
+  ball.velocityX = 0;
+  ball.velocityY = 0;
+}
+draw();
